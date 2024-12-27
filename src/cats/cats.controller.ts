@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, Header, HttpCode, Redirect } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, Header, HttpCode, Redirect, HostParam, HttpException, HttpStatus, UseFilters, ForbiddenException } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { CatsService } from './cats.service';
 import { CreateCatDto } from './dto/create-cat.dto';
@@ -9,20 +9,26 @@ export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
   @Post()
-  @HttpCode(202)
-  create(@Body() createCatDto: CreateCatDto) {
-    return this.catsService.create(createCatDto);
+  create(@Body() createCatDto: CreateCatDto, @Res() res: Response) {
+    return res.status(HttpStatus.CREATED).json(createCatDto)
   }
 
   @Get()
   findAll(@Req() req: Request, @Res() res: Response) {
+    return res.status(HttpStatus.OK).json({
+      message: 'ok',
+      data: [{
+        id: 1,
+        name: 'cat1'
+      }]
+    })
     return this.catsService.findAll();
   }
 
   @Get(':id')
-  @Header('Cache-Control', 'no-store')
-  findOne(@Param('id') id: string) {
-    return this.catsService.findOne(+id);
+  findOne(@Param() params: any) {
+    console.log(params);
+    return this.catsService.findOne(+params.id);
   }
 
   @Patch(':id')
