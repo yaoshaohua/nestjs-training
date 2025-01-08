@@ -8,17 +8,14 @@ import { UpdateCatDto } from './dto/update-cat.dto';
 export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
+  @Post('create')
   @Post()
-  create(@Body() createCatDto: CreateCatDto) {
-    return 'This action adds a new cat';
+  async create(@Body() createCatDto: CreateCatDto, @Res() res: Response) {
+    const createdCat = await this.catsService.create(createCatDto);
+    return res.status(HttpStatus.CREATED).json(createdCat)
   }
-  // @Post()
-  // async create(@Body() createCatDto: CreateCatDto, @Res() res: Response) {
-  //   const createdCat = await this.catsService.create(createCatDto);
-  //   return res.status(HttpStatus.CREATED).json(createdCat)
-  // }
 
-  @Get()
+  @Get('findAll')
   findAll(@Req() req: Request, @Res() res: Response) {
     return res.status(HttpStatus.OK).json({
       message: 'ok',

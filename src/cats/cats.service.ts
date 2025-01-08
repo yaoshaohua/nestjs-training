@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Cat } from './schemas/cat.schema';
 import { CreateCatDto } from './dto/create-cat.dto';
@@ -7,10 +7,13 @@ import { UpdateCatDto } from './dto/update-cat.dto';
 
 @Injectable()
 export class CatsService {
+  private readonly logger = new Logger(CatsService.name, { timestamp: true });
+
   constructor(@InjectModel(Cat.name) private catModel: Model<Cat>) {}
 
   async create(createCatDto: CreateCatDto): Promise<Cat> {
     const createdCat = new this.catModel(createCatDto);
+    this.logger.log(`Cat created: ${JSON.stringify(createCatDto)}`);
     return createdCat.save();
   }
 
