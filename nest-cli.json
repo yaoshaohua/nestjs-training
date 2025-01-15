@@ -5,5 +5,11 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "builder": "swc"
+  },
+  "generators": {
+    "spec": false,
+    "resource": {
+      "entitiesDir": "schemas"
+    }
   }
 }

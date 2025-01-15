@@ -1,28 +1,15 @@
-import { Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CatsModule } from './cats/cats.module';
-import { APP_FILTER } from '@nestjs/core';
-import { HttpExceptionFilter } from './http-exception.filter';
-import { LoggerMiddleware } from './common/middleware/logger.middleware';
-import { MongooseModule } from '@nestjs/mongoose';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
     MongooseModule.forRoot('mongodb://localhost/nest'),
-    CatsModule
+    CategoriesModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    {
-      provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
-    },
-  ],
+  providers: [AppService],
 })
-export class AppModule implements NestModule {
-  configure(consumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('cats');
-  }
-}
+export class AppModule {}
