@@ -1,9 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
+import { CreateCategoryDto } from './create-category.dto';
 
-export class UpdateCategoryDto {
+export class UpdateCategoryDto extends CreateCategoryDto {
   @IsNotEmpty({ message: '标签id不能为空' })
   id: string;
-
-  @IsNotEmpty({ message: '标签名称不能为空' })
-  name: string;
 }

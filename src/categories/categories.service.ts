@@ -8,17 +8,20 @@ import { Category } from './schemas/category.schema';
 @Injectable()
 export class CategoriesService {
   constructor(
-    @InjectModel(Category.name) private categoryModel: Model<Category>,
+    @InjectModel(Category.name) private readonly categoryModel: Model<Category>,
   ) {}
+
   async create(createCategoryDto: CreateCategoryDto) {
-    const existingCategory = await this.categoryModel.findOne({
-      name: createCategoryDto.name,
-    });
+    const existingCategory = await this.categoryModel
+      .findOne({
+        name: createCategoryDto.name,
+      })
+      .exec();
     if (existingCategory) {
       throw new Error(`${createCategoryDto.name} already exists`);
     }
-    const createdCategory = new this.categoryModel(createCategoryDto);
-    return createdCategory.save();
+    const createdCategory = await this.categoryModel.create(createCategoryDto);
+    return createdCategory;
   }
 
   findAll() {
@@ -27,14 +30,14 @@ export class CategoriesService {
 
   async update(updateCategoryDto: UpdateCategoryDto) {
     const { id, ...rest } = updateCategoryDto;
-    const existingCategory = await this.categoryModel.findOne({
-      _id: new Types.ObjectId(id),
-    });
+    const existingCategory = await this.categoryModel
+      .findOne({
+        _id: new Types.ObjectId(id),
+      })
+      .exec();
     if (!existingCategory) throw new Error('Category not found');
-    return this.categoryModel.findOneAndUpdate(
-      { _id: id },
-      { $set: rest },
-      { new: true },
-    );
+    return this.categoryModel
+      .findOneAndUpdate({ _id: id }, { $set: rest }, { new: true })
+      .exec();
   }
 }
