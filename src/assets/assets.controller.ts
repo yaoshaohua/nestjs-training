@@ -5,6 +5,7 @@ import {
   Body,
   HttpStatus,
   HttpException,
+  Param,
 } from '@nestjs/common';
 import { AssetsService } from './assets.service';
 import { CreateAssetDto } from './dto/create-asset.dto';
@@ -27,6 +28,15 @@ export class AssetsController {
   @Post('list')
   findAll(@Body() queryAssetDto: QueryAssetDto) {
     return this.assetsService.findAll(queryAssetDto);
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    try {
+      return await this.assetsService.find0ne(id);
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Post('update')

@@ -42,6 +42,17 @@ export class AssetsService {
     return { list, total };
   }
 
+  async find0ne(id: string) {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new Error(`Invalid asset ID: ${id}`);
+    }
+    const existingAsset = await this.assetModel.findById(id).exec();
+    if (!existingAsset) {
+      throw new Error(`Asset not found`);
+    }
+    return existingAsset;
+  }
+
   async update(updateAssetDto: UpdateAssetDto) {
     const { id, ...rest } = updateAssetDto;
     const _id = new Types.ObjectId(id);
