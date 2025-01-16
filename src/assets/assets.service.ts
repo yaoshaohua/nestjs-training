@@ -37,16 +37,20 @@ export class AssetsService {
       .sort({ updatedAt: -1 })
       .skip((pageNum - 1) * pageSize)
       .limit(pageSize)
+      .populate('categories', 'name')
       .exec();
     const total = await this.assetModel.countDocuments(query).exec();
     return { list, total };
   }
 
-  async find0ne(id: string) {
+  async findOne(id: string) {
     if (!Types.ObjectId.isValid(id)) {
       throw new Error(`Invalid asset ID: ${id}`);
     }
-    const existingAsset = await this.assetModel.findById(id).exec();
+    const existingAsset = await this.assetModel
+      .findById(id)
+      .populate('categories', 'name')
+      .exec();
     if (!existingAsset) {
       throw new Error(`Asset not found`);
     }

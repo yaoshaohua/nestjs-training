@@ -33,8 +33,8 @@ export class Asset {
   @Prop({ required: true })
   content: string;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'Category' })
-  categories: Category;
+  @Prop({ required: true, type: [Types.ObjectId], ref: 'Category' })
+  categories: Category[];
 
   @Prop()
   projectIdList: string[];

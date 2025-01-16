@@ -33,7 +33,7 @@ export class AssetsController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
-      return await this.assetsService.find0ne(id);
+      return await this.assetsService.findOne(id);
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
