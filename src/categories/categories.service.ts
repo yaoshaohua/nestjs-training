@@ -20,8 +20,7 @@ export class CategoriesService {
     if (existingCategory) {
       throw new Error(`${createCategoryDto.name} already exists`);
     }
-    const createdCategory = await this.categoryModel.create(createCategoryDto);
-    return createdCategory;
+    return await this.categoryModel.create(createCategoryDto);
   }
 
   findAll() {

@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateAssetDto } from './dto/create-asset.dto';
 import { UpdateAssetDto } from './dto/update-asset.dto';
+import { QueryAssetDto } from './dto/query-asset.dto';
 import { Asset } from './schemas/asset.schema';
 
 @Injectable()
@@ -20,23 +21,29 @@ export class AssetsService {
     if (existingAsset) {
       throw new Error(`${createAssetDto.name} already exists`);
     }
-    const createdAsset = await this.assetModel.create(createAssetDto);
-    return createdAsset;
+    return await this.assetModel.create(createAssetDto);
   }
 
-  findAll() {
-    return `This action returns all assets`;
+  findAll(queryAssetDto: QueryAssetDto) {
+    const { pageNum, pageSize, ...rest } = queryAssetDto;
+    return this.assetModel
+      .find(rest)
+      .sort({ updateTime: -1 })
+      .skip((pageNum - 1) * pageSize)
+      .limit(pageSize);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} asset`;
-  }
-
-  update(id: number, updateAssetDto: UpdateAssetDto) {
-    return `This action updates a #${id} asset`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} asset`;
+  async update(updateAssetDto: UpdateAssetDto) {
+    const { id, ...rest } = updateAssetDto;
+    const _id = new Types.ObjectId(id);
+    const existingAsset = await this.assetModel.findOne({ _id }).exec();
+    if (!existingAsset) {
+      throw new Error(`Asset not found`);
+    }
+    return await this.assetModel.findByIdAndUpdate(
+      { _id },
+      { $set: rest },
+      { new: true },
+    );
   }
 }
