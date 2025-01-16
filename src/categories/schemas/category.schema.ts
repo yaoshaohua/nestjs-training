@@ -14,7 +14,7 @@ export type CategoryDocument = HydratedDocument<Category>;
   },
 })
 export class Category {
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   name: string;
 }
 

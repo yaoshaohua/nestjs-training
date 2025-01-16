@@ -6,7 +6,7 @@ import { Category } from '@/categories/schemas/category.schema';
 export type AssetType = 'image' | 'video' | 'audio';
 export type AssetDocument = HydratedDocument<Asset>;
 
-const DATE_TIME_FORMAT = 'yyyy-MM-dd HH:mm:ss';
+export const DATE_TIME_FORMAT = 'yyyy-MM-dd HH:mm:ss';
 
 @Schema({
   timestamps: true,
@@ -24,7 +24,7 @@ const DATE_TIME_FORMAT = 'yyyy-MM-dd HH:mm:ss';
   },
 })
 export class Asset {
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   name: string;
 
   @Prop({ required: true, type: String })
