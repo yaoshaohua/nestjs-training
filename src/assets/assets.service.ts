@@ -24,13 +24,22 @@ export class AssetsService {
     return await this.assetModel.create(createAssetDto);
   }
 
-  findAll(queryAssetDto: QueryAssetDto) {
+  async findAll(queryAssetDto: QueryAssetDto) {
     const { pageNum, pageSize, ...rest } = queryAssetDto;
-    return this.assetModel
-      .find(rest)
-      .sort({ updateTime: -1 })
+    const query = {};
+    for (const key in rest) {
+      if (rest[key]) {
+        query[key] = new RegExp(rest[key], 'i');
+      }
+    }
+    const list = await this.assetModel
+      .find(query)
+      .sort({ updatedAt: -1 })
       .skip((pageNum - 1) * pageSize)
-      .limit(pageSize);
+      .limit(pageSize)
+      .exec();
+    const total = await this.assetModel.countDocuments(query).exec();
+    return { list, total };
   }
 
   async update(updateAssetDto: UpdateAssetDto) {
